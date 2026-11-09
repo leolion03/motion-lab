@@ -2,32 +2,32 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import ParticleCloud, { createCloud } from "./ParticleCloud";
 
-export default function SpiralGalaxy({ speed = 1 }: { speed?: number }) {
+export default function SpiralGalaxy({ speed = 1, brightness = 1, glow = 1, glowEnabled = false }: { speed?: number; brightness?: number; glow?: number; glowEnabled?: boolean }) {
   const group = useRef<THREE.Group>(null);
-  const { positions, colors } = useMemo(() => {
-    const n=6000, positions=new Float32Array(n*3),colors=new Float32Array(n*3);
-    const inner=new THREE.Color("#ffb0e0"),outer=new THREE.Color("#6378ff");
-    for(let i=0;i<n;i++){
-      const radius=Math.pow(Math.random(),.72)*2.25;
-      const arm=i%4;
-      const angle=arm*Math.PI/2+radius*2.55+(Math.random()-.5)*(.12+radius*.3);
-      positions[i*3]=Math.cos(angle)*radius;
-      positions[i*3+1]=(Math.random()-.5)*(.13+radius*.12);
-      positions[i*3+2]=Math.sin(angle)*radius;
-      const c=inner.clone().lerp(outer,radius/2.25);
-      colors[i*3]=c.r;colors[i*3+1]=c.g;colors[i*3+2]=c.b;
-    }
-    return {positions,colors};
-  },[]);
-  useFrame((_,delta)=>{if(group.current)group.current.rotation.y+=delta*speed*.09;});
-  return <group rotation={[.3,0,.1]} ref={group}>
-    <points>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions,3]}/>
-        <bufferAttribute attach="attributes-color" args={[colors,3]}/>
-      </bufferGeometry>
-      <pointsMaterial size={.024} vertexColors transparent opacity={.95} depthWrite={false} blending={THREE.AdditiveBlending}/>
-    </points>
+  const elapsed = useRef(0);
+  const arms = useMemo(() => createCloud(9500, 301, (i, rand, put) => {
+    const radius = Math.pow(rand(), .72) * 2.15;
+    const arm = i % 4;
+    const spread = (rand()-.5) * (.16 + radius * .27);
+    const angle = arm * Math.PI / 2 + radius * 2.6 + spread;
+    const y = (rand()-.5) * (.14 + .12 * (2.15-radius));
+    const c = new THREE.Color('#ffe6d2').lerp(new THREE.Color('#8f6aff'), Math.min(1, radius / 2.15));
+    if (rand() > .72) c.lerp(new THREE.Color('#66c7ff'), rand()*.62);
+    put(Math.cos(angle) * radius, y, Math.sin(angle) * radius, c, 1.2 + rand() * 2.2);
+  }), []);
+  const core = useMemo(() => createCloud(900, 445, (_, rand, put) => {
+    const a = rand()*Math.PI*2;
+    const r = Math.pow(rand(), 1.85)*.45;
+    put(Math.cos(a)*r, (rand()-.5)*.25, Math.sin(a)*r, new THREE.Color('#ffe7cf'), 1.8+rand()*3.1);
+  }), []);
+  useFrame((_, dt) => {
+    elapsed.current += Math.min(dt,.05) * speed;
+    if (group.current) group.current.rotation.y = elapsed.current * .10;
+  });
+  return <group ref={group} rotation={[.24, 0, .12]}>
+    <ParticleCloud data={arms} speed={speed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} scale={1.25}/>
+    <ParticleCloud data={core} speed={speed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} scale={1.8}/>
   </group>;
 }
