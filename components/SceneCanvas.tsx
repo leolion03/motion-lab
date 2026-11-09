@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef } from "react";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import type { Work } from "@/lib/works";
 
+const PrimogemScene = dynamic(() => import("@/scenes/Primogem"), { ssr: false });
 const Heart = dynamic(() => import("@/scenes/ParticleHeart"), { ssr: false });
 const Tree = dynamic(() => import("@/scenes/ChristmasTree"), { ssr: false });
 const Galaxy = dynamic(() => import("@/scenes/SpiralGalaxy"), { ssr: false });
@@ -22,6 +23,7 @@ const FountainScene = dynamic(() => import("@/scenes/Fountain"), { ssr: false })
 const BirthdayCakeScene = dynamic(() => import("@/scenes/BirthdayCake"), { ssr: false });
 
 const SaturnScene = dynamic(() => import("@/scenes/Saturn"), { ssr: false });
+const FourLeafCloverScene = dynamic(() => import("@/scenes/FourLeafClover"), { ssr: false });
 
 function CameraControls({ resetSignal }: { resetSignal: number }) {
   const controls = useRef<OrbitControlsImpl>(null);
@@ -52,11 +54,12 @@ export default function SceneCanvas({
   return <div className={`scene scene-${slug} ${interactive ? "scene-interactive" : "scene-preview"}`} role="img" aria-label={`${slug.replaceAll("-", " ")} animated particle artwork`}>
     <Canvas
       dpr={[1, 1.65]}
-      camera={{ position: [0, 0, slug === "particle-wave" || slug === "fountain" ? 7 : slug === "spiral-galaxy" ? 6 : 5.5], fov: 52 }}
+      camera={{ position: [0, 0, slug === "particle-wave" || slug === "fountain" ? 7 : slug === "spiral-galaxy" ? 6 : slug === "primogem" ? 5.8 : 5.5], fov: 52 }}
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
     >
       <Suspense fallback={null}>
         <ambientLight intensity={0.7} />
+        {slug === "primogem" && <PrimogemScene speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
         {slug === "particle-heart" && <Heart speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
         {slug === "christmas-tree" && <Tree speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
         {slug === "spiral-galaxy" && <Galaxy speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
@@ -67,6 +70,7 @@ export default function SceneCanvas({
         {slug === "fountain" && <FountainScene speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
         {slug === "birthday-cake" && <BirthdayCakeScene speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
         {slug === "saturn" && <SaturnScene speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
+        {slug === "four-leaf-clover" && <FourLeafCloverScene speed={effectiveSpeed} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />}
         {interactive && <CameraControls resetSignal={resetSignal} />}
       </Suspense>
     </Canvas>

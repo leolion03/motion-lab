@@ -9,6 +9,7 @@ import { getWork, works } from "@/lib/works";
 import SceneCanvas from "@/components/SceneCanvas";
 
 const files: Record<string, string> = {
+  "primogem": "Primogem.tsx",
   "particle-heart": "ParticleHeart.tsx",
   "christmas-tree": "ChristmasTree.tsx",
   "spiral-galaxy": "SpiralGalaxy.tsx",
@@ -19,6 +20,7 @@ const files: Record<string, string> = {
   "fountain": "Fountain.tsx",
   "birthday-cake": "BirthdayCake.tsx",
   "saturn": "Saturn.tsx",
+  "four-leaf-clover": "FourLeafClover.tsx",
 };
 
 export default function ArtworkDetail({ slug }: { slug: string }) {
@@ -125,7 +127,7 @@ export default function ArtworkDetail({ slug }: { slug: string }) {
     <div className="detail-actions">
       <div><strong>{work.count}</strong><small>PARTICLES</small></div>
       <div><strong>WEBGL</strong><small>REAL-TIME RENDER</small></div>
-      <div><strong>v0.4</strong><small>INTERACTIVE STUDY</small></div>
+      <div><strong>v0.5.1</strong><small>INTERACTIVE STUDY</small></div>
       <button onClick={() => setShowCode(v => !v)} className="source-toggle" aria-expanded={showCode}><Code2 size={17} />{showCode ? "Hide source" : "View source"}<ArrowUpRight size={16} /></button>
     </div>
 
@@ -135,6 +137,6 @@ export default function ArtworkDetail({ slug }: { slug: string }) {
       <p className="source-note">Scene component only. Each artwork also imports ParticleCloud.tsx; open /source/ParticleCloud.tsx or see README for the shared particle shader.</p>
     </section>}
     <div className="detail-next"><Link href="/">← All artworks</Link><Link href={`/animation/${next.slug}`}>Next: {next.name} <ArrowUpRight size={16} /></Link></div>
-    <footer className="footer"><span>© 2026 Motion Lab · v0.4</span><a href="https://github.com" target="_blank" rel="noreferrer">GitHub <ExternalLink size={13} /></a></footer>
+    <footer className="footer"><span>© 2026 Motion Lab · v0.5.1</span><a href="https://github.com" target="_blank" rel="noreferrer">GitHub <ExternalLink size={13} /></a></footer>
   </main>;
 }

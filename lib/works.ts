@@ -1,5 +1,5 @@
 export type Work = {
-  slug: "particle-heart" | "christmas-tree" | "spiral-galaxy" | "particle-wave" | "jellyfish" | "blooming-flower" | "butterfly" | "saturn" | "fountain" | "birthday-cake";
+  slug: "primogem" | "particle-heart" | "christmas-tree" | "spiral-galaxy" | "particle-wave" | "jellyfish" | "blooming-flower" | "butterfly" | "saturn" | "fountain" | "birthday-cake" | "four-leaf-clover";
   name: string;
   subtitle: string;
   category: string;
@@ -8,6 +8,7 @@ export type Work = {
   count: string;
 };
 export const works: Work[] = [
+  {slug:"primogem",name:"Intertwined Fate",subtitle:"A wish bound by two colors",category:"Game",hue:"violet",description:"An Intertwined Fate-inspired particle emblem with pink-and-blue overlapping stars and orbiting ribbons.",count:"15.2K"},
   {slug:"particle-heart",name:"Particle Heart",subtitle:"A thousand little feelings",category:"Particles",hue:"rose",description:"A rotating heart sculpted from thousands of delicate points.",count:"7.9K"},
   {slug:"christmas-tree",name:"Christmas Tree",subtitle:"An endless winter wish",category:"Seasonal",hue:"gold",description:"A layered Christmas tree with a gold ribbon and particle star.",count:"8.6K"},
   {slug:"spiral-galaxy",name:"Spiral Galaxy",subtitle:"Somewhere beyond the stars",category:"Space",hue:"violet",description:"Four colorful arms swirling around a luminous galactic center.",count:"10.4K"},
@@ -17,6 +18,7 @@ export const works: Work[] = [
   {slug:"butterfly",name:"Monarch Butterfly",subtitle:"An orange-winged migration",category:"Nature",hue:"gold",description:"A monarch-inspired butterfly with orange wings, dark veins, pale spots and gently beating wings.",count:"12.0K"},
   {slug:"saturn",name:"Saturn Rings",subtitle:"An orbit of golden dust",category:"Space",hue:"gold",description:"A golden ringed planet with fine orbiting particles.",count:"11.8K"},
   {slug:"fountain",name:"Particle Fountain",subtitle:"Water drawn with code",category:"Nature",hue:"cyan",description:"Streams of water particles rise, curve and fall into a circular pool.",count:"6.9K"},
-  {slug:"birthday-cake",name:"Birthday Cake",subtitle:"Make a wish",category:"Seasonal",hue:"rose",description:"A two-tier particle cake with frosting, five candles and floating confetti.",count:"10.9K"}
+  {slug:"birthday-cake",name:"Birthday Cake",subtitle:"Make a wish",category:"Seasonal",hue:"rose",description:"A two-tier particle cake with frosting, five candles and floating confetti.",count:"10.9K"},
+  {slug:"four-leaf-clover",name:"Four-Leaf Clover",subtitle:"A little coded luck",category:"Nature",hue:"cyan",description:"A swaying four-leaf clover with a curved stem and tiny lucky sparkles.",count:"6.3K"}
 ];
 export const getWork = (slug: string) => works.find((item) => item.slug === slug);

@@ -1,3 +1,11 @@
+# Motion Lab v0.5.1 — Primogem + Clover Update
+
+Added two new artworks:
+- Primogem (placed first in the gallery)
+- Four-Leaf Clover
+
+Gallery total: 12 artworks.
+
 # Motion Lab v0.5 — Curated Collection
 
 A complete Next.js + React Three Fiber gallery of **10 live particle artworks**.

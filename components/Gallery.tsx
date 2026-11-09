@@ -5,7 +5,7 @@ import { ArrowDown, ArrowUpRight, Search, Sparkles } from "lucide-react";
 import { works } from "@/lib/works";
 import LazyScene from "@/components/LazyScene";
 
-const filters = ["All works", "Particles", "Seasonal", "Space", "Abstract", "Nature"];
+const filters = ["All works", "Game", "Particles", "Seasonal", "Space", "Abstract", "Nature"];
 export default function Gallery() {
   const [filter, setFilter] = useState("All works");
   const [query, setQuery] = useState("");
@@ -16,7 +16,7 @@ export default function Gallery() {
 
   return <>
     <header className="topbar container">
-      <Link className="brand" href="/"><span className="brand-mark"><Sparkles size={19} /></span><span>MOTION<span className="brand-light">LAB</span></span><span className="brand-version">/ 0.5</span></Link>
+      <Link className="brand" href="/"><span className="brand-mark"><Sparkles size={19} /></span><span>MOTION<span className="brand-light">LAB</span></span><span className="brand-version">/ 0.5.1</span></Link>
       <nav aria-label="Main navigation"><a href="#gallery">Gallery</a><a href="#about">About</a><a href="https://github.com" target="_blank" rel="noreferrer">GitHub ↗</a></nav>
     </header>
     <main>
@@ -26,7 +26,7 @@ export default function Gallery() {
           <h1>Art, written<br />in <em>motion.</em></h1>
           <p>A little corner of the internet where code becomes light, particles become feelings, and every frame tells a story.</p>
           <a href="#gallery" className="primary-link">Explore the collection <ArrowUpRight size={18} /></a>
-          <div className="hero-meta"><span>10 ORIGINAL EXPERIMENTS</span><span>LIVE IN YOUR BROWSER</span></div>
+          <div className="hero-meta"><span>12 ORIGINAL EXPERIMENTS</span><span>LIVE IN YOUR BROWSER</span></div>
         </div>
         <div className="hero-art" aria-hidden="true"><div className="hero-art-ring ring-a" /><div className="hero-art-ring ring-b" /><div className="hero-art-center" /><div className="hero-art-dot dot-a" /><div className="hero-art-dot dot-b" /><div className="hero-art-dot dot-c" /></div>
         <a href="#gallery" className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={14}/></a>
@@ -40,6 +40,6 @@ export default function Gallery() {
       </section>
       <section className="about container" id="about"><div><div className="eyebrow small">02 / THE IDEA</div><h2>Made of math.<br /><em>Made to feel.</em></h2></div><p>Motion Lab is a growing collection of small experiments in generative art. Every piece is rendered live in your browser, with its source code open for curious minds to explore.</p></section>
     </main>
-    <footer className="footer container"><span>© 2026 Motion Lab · v0.5</span><span>Built with Next.js + Three.js</span></footer>
+    <footer className="footer container"><span>© 2026 Motion Lab · v0.5.1</span><span>Built with Next.js + Three.js</span></footer>
   </>;
 }
