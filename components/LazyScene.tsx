@@ -5,7 +5,7 @@ import type { Work } from "@/lib/works";
 
 // Only allocate a WebGL context near the viewport. Ten simultaneous Canvas
 // instances can exceed the context limit on phones and some laptops.
-export default function LazyScene({ slug }: { slug: Work["slug"] }) {
+export default function LazyScene({ slug, label }: { slug: Work["slug"]; label: string }) {
   const node = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -21,6 +21,6 @@ export default function LazyScene({ slug }: { slug: Work["slug"] }) {
     return () => observer.disconnect();
   }, []);
   return <div ref={node} style={{ width: "100%", height: "100%" }}>
-    {visible && <SceneCanvas slug={slug} />}
+    {visible && <SceneCanvas slug={slug} label={label} />}
   </div>;
 }

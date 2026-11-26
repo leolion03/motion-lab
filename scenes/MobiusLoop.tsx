@@ -1,38 +1,33 @@
 "use client";
-// Motion Lab — Mobius Loom v1.0.0
+// Motion Lab — Mobius Loop v1.0.0
 // Dependencies: react, three, @react-three/fiber; dev: @types/three.
-// Usage: import MobiusLoom from './MobiusLoom'; render <MobiusLoom /> outside any Canvas.
+// Usage: import MobiusLoop from './MobiusLoop'; render <MobiusLoop /> outside any Canvas.
 // Concept: cyan-to-lilac grains weave around a single twisted ribbon.
 // Move mouse or drag horizontally to tilt; release to settle. Page vertical scroll remains enabled.
 // Ranges: count 300–12000 (default 2600); size 0.005–0.035 world units (0.012);
 // speed 0–2 (0.35); flutter 0–0.2 world units (0.045); interaction 0–1 (0.55).
 // mobile=true caps count at 1600 and DPR at 1; default desktop DPR capped at 1.5.
-// Glow is always off: no bloom, additive blending, or external assets.
-// Validation: source review only; no compiler, browser, GPU or physical device tests run.
-// Mobile acceptance checklist (NOT YET TESTED):
-// [ ] Safari iOS and Chrome Android: 320/375/430px portrait + landscape, no clipping.
-// [ ] Drag/release/cancel/outside release resets tilt; vertical page scroll works.
-// [ ] Reduced-motion enabled before load and toggled live: static image, no tilt.
-// [ ] 60-second run: target >=30fps; use mobile preset if slow; inspect thermal load.
-// [ ] Navigate away/back repeatedly: no lost WebGL context or accumulating resources.
-// [ ] Background/resume: no large animation jump; inspect console for shader errors.
-// Status: proposed=yes; delivered=yes; integrated=unverified; confirmed complete=no.
+// Glow is off by default. The shared ParticleCloud shader handles brightness and glow.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import ParticleCloud from "./ParticleCloud";
 
 type Props = { count?: number; size?: number; speed?: number; flutter?: number;
-  interaction?: number; mobile?: boolean; reducedMotion?: boolean; embedded?: boolean };
+  interaction?: number; mobile?: boolean; reducedMotion?: boolean; embedded?: boolean; label?: string; brightness?: number; glow?: number; glowEnabled?: boolean };
 const clamp = THREE.MathUtils.clamp;
-function Ribbon({ count, size, speed, flutter, interaction, reduced, target }: {
+function Ribbon({ count, size, speed, flutter, interaction, reduced, target, brightness, glow, glowEnabled }: {
   count: number; size: number; speed: number; flutter: number; interaction: number;
-  reduced: boolean; target: React.MutableRefObject<number>;
+  reduced: boolean; target: React.RefObject<number>;
+  brightness: number; glow: number; glowEnabled: boolean;
 }) {
-  const points = useRef<THREE.Points>(null);
+  const points = useRef<THREE.Group>(null);
   const time = useRef(0);
   const data = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count).fill(1.8);
+    const phases = new Float32Array(count);
     const uv = new Float32Array(count * 2);
     let seed = 8127;
     const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
@@ -41,9 +36,10 @@ function Ribbon({ count, size, speed, flutter, interaction, reduced, target }: {
       uv[2*i] = random() * Math.PI * 2;
       uv[2*i+1] = (random() - 0.5) * 0.85;
       const color = a.clone().lerp(b, (Math.sin(uv[2*i]) + 1) / 2);
+      phases[i] = uv[2*i];
       color.toArray(colors, 3*i);
     }
-    return { positions, colors, uv };
+    return { positions, colors, sizes, phases, uv };
   }, [count]);
   useFrame((_, delta) => {
     time.current += reduced ? 0 : Math.min(delta, 0.05) * speed;
@@ -56,20 +52,16 @@ function Ribbon({ count, size, speed, flutter, interaction, reduced, target }: {
       data.positions[3*i+2] = r * Math.sin(u) + (reduced ? 0 : flutter * Math.sin(u*5 + time.current*2));
     }
     if (points.current) {
-      points.current.geometry.attributes.position.needsUpdate = true;
       points.current.rotation.x = reduced ? 0.7 : THREE.MathUtils.damp(points.current.rotation.x, 0.7 + target.current * interaction, 5, Math.min(delta,0.05));
     }
   });
-  return <points ref={points} rotation={[0.7, 0, 0]} frustumCulled={false}>
-    <bufferGeometry>
-      <bufferAttribute attach="attributes-position" args={[data.positions, 3]} />
-      <bufferAttribute attach="attributes-color" args={[data.colors, 3]} />
-    </bufferGeometry>
-    <pointsMaterial vertexColors size={size} sizeAttenuation toneMapped={false} />
-  </points>;
+  return <group ref={points} rotation={[0.7, 0, 0]}>
+    <ParticleCloud data={data} dynamic speed={reduced ? 0 : speed} scale={size / 0.012}
+      brightness={brightness} glow={glow} glowEnabled={glowEnabled} />
+  </group>;
 }
-export default function MobiusLoom({ count=2600, size=0.012, speed=0.35,
-  flutter=0.045, interaction=0.55, mobile=false, reducedMotion, embedded=false }: Props) {
+export default function MobiusLoop({ count=2600, size=0.012, speed=0.35,
+  flutter=0.045, interaction=0.55, mobile=false, reducedMotion, embedded=false, label="Mobius Loop: a twisted cyan and lilac particle ribbon.", brightness=0.8, glow=1, glowEnabled=false }: Props) {
   const [systemReduced, setSystemReduced] = useState(true);
   const target = useRef(0);
   useEffect(() => {
@@ -79,7 +71,7 @@ export default function MobiusLoom({ count=2600, size=0.012, speed=0.35,
     return () => query.removeEventListener('change', update);
   }, []);
   const reduced = reducedMotion ?? systemReduced;
-  return <div role="img" aria-label="Mobius Loom: a twisted cyan and lilac particle ribbon."
+  return <div role="img" aria-label={label}
     style={{ width:'100%', height:embedded ? '100%' : 'min(70vh, 560px)', minHeight:embedded ? 0 : 280, touchAction:'pan-y' }}
     onPointerMove={e => {
       if (!interaction) return;
@@ -97,7 +89,7 @@ export default function MobiusLoom({ count=2600, size=0.012, speed=0.35,
       <Ribbon count={Math.min(mobile ? 1600 : 12000, Math.floor(clamp(count,300,12000)))}
         size={clamp(size,0.005,0.035)} speed={clamp(speed,0,2)}
         flutter={clamp(flutter,0,0.2)} interaction={clamp(interaction,0,1)}
-        reduced={reduced} target={target} />
+        reduced={reduced} target={target} brightness={brightness} glow={glow} glowEnabled={glowEnabled} />
     </Canvas>
   </div>;
 }

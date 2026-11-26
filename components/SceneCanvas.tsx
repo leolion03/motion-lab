@@ -6,7 +6,7 @@ import { Suspense, useEffect, useRef } from "react";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import type { Work } from "@/lib/works";
 
-const MobiusLoom = dynamic(() => import("@/scenes/MobiusLoom"), { ssr: false });
+const MobiusLoop = dynamic(() => import("@/scenes/MobiusLoop"), { ssr: false });
 const PrimogemScene = dynamic(() => import("@/scenes/Primogem"), { ssr: false });
 const Heart = dynamic(() => import("@/scenes/ParticleHeart"), { ssr: false });
 const Tree = dynamic(() => import("@/scenes/ChristmasTree"), { ssr: false });
@@ -39,9 +39,10 @@ function CameraControls({ resetSignal }: { resetSignal: number }) {
 }
 
 export default function SceneCanvas({
-  slug, large = false, interactive = false, paused = false, speed = 1, brightness = 0.8, glow = 1, glowEnabled = false, resetSignal = 0,
+  slug, label, large = false, interactive = false, paused = false, speed = 1, brightness = 0.8, glow = 1, glowEnabled = false, resetSignal = 0,
 }: {
   slug: Work["slug"];
+  label: string;
   large?: boolean;
   interactive?: boolean;
   paused?: boolean;
@@ -52,13 +53,13 @@ export default function SceneCanvas({
   resetSignal?: number;
 }) {
   const effectiveSpeed = paused ? 0 : speed;
-  if (slug === "mobius-loom") {
-    return <div className="scene scene-mobius-loom">
-      <MobiusLoom embedded speed={0.35 * effectiveSpeed} interaction={interactive && !paused ? 0.55 : 0} />
+  if (slug === "mobius-loop") {
+    return <div className="scene scene-mobius-loop">
+      <MobiusLoop label={label} embedded brightness={brightness} glow={glow} glowEnabled={glowEnabled} speed={0.35 * effectiveSpeed} interaction={interactive && !paused ? 0.55 : 0} />
       <div className="scene-grain" />
     </div>;
   }
-  return <div className={`scene scene-${slug} ${interactive ? "scene-interactive" : "scene-preview"}`} role="img" aria-label={`${slug.replaceAll("-", " ")} animated particle artwork`}>
+  return <div className={`scene scene-${slug} ${interactive ? "scene-interactive" : "scene-preview"}`} role="img" aria-label={label}>
     <Canvas
       dpr={[1, 1.65]}
       camera={{ position: [0, 0, slug === "particle-wave" || slug === "fountain" ? 7 : slug === "spiral-galaxy" ? 6 : slug === "primogem" ? 5.8 : 5.5], fov: 52 }}

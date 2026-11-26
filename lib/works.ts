@@ -1,5 +1,5 @@
 export type Work = {
-  slug: "primogem" | "particle-heart" | "christmas-tree" | "spiral-galaxy" | "particle-wave" | "jellyfish" | "blooming-flower" | "butterfly" | "saturn" | "fountain" | "birthday-cake" | "four-leaf-clover" | "mobius-loom";
+  slug: "primogem" | "particle-heart" | "christmas-tree" | "spiral-galaxy" | "particle-wave" | "jellyfish" | "blooming-flower" | "butterfly" | "saturn" | "fountain" | "birthday-cake" | "four-leaf-clover" | "mobius-loop";
   name: string;
   subtitle: string;
   category: string;
@@ -20,6 +20,6 @@ export const works: Work[] = [
   {slug:"fountain",name:"Particle Fountain",subtitle:"Water drawn with code",category:"Nature",hue:"cyan",description:"Streams of water particles rise, curve and fall into a circular pool.",count:"6.9K"},
   {slug:"birthday-cake",name:"Birthday Cake",subtitle:"Make a wish",category:"Seasonal",hue:"rose",description:"A two-tier particle cake with frosting, five candles and floating confetti.",count:"10.9K"},
   {slug:"four-leaf-clover",name:"Four-Leaf Clover",subtitle:"A little coded luck",category:"Nature",hue:"cyan",description:"A swaying four-leaf clover with a curved stem and tiny lucky sparkles.",count:"6.3K"},
-  {slug:"mobius-loom",name:"Mobius Loom",subtitle:"A ribbon with a single twist",category:"Abstract",hue:"cyan",description:"Cyan and lilac particles travel around a twisted ribbon. Drag horizontally to tilt it.",count:"2.6K"}
+  {slug:"mobius-loop",name:"Mobius Loop",subtitle:"A ribbon with a single twist",category:"Abstract",hue:"cyan",description:"Cyan and lilac particles travel around a twisted ribbon. Drag horizontally to tilt it.",count:"2.6K"}
 ];
 export const getWork = (slug: string) => works.find((item) => item.slug === slug);
