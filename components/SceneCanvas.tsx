@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef } from "react";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import type { Work } from "@/lib/works";
 
+const MobiusLoom = dynamic(() => import("@/scenes/MobiusLoom"), { ssr: false });
 const PrimogemScene = dynamic(() => import("@/scenes/Primogem"), { ssr: false });
 const Heart = dynamic(() => import("@/scenes/ParticleHeart"), { ssr: false });
 const Tree = dynamic(() => import("@/scenes/ChristmasTree"), { ssr: false });
@@ -51,6 +52,12 @@ export default function SceneCanvas({
   resetSignal?: number;
 }) {
   const effectiveSpeed = paused ? 0 : speed;
+  if (slug === "mobius-loom") {
+    return <div className="scene scene-mobius-loom">
+      <MobiusLoom embedded speed={0.35 * effectiveSpeed} interaction={interactive && !paused ? 0.55 : 0} />
+      <div className="scene-grain" />
+    </div>;
+  }
   return <div className={`scene scene-${slug} ${interactive ? "scene-interactive" : "scene-preview"}`} role="img" aria-label={`${slug.replaceAll("-", " ")} animated particle artwork`}>
     <Canvas
       dpr={[1, 1.65]}

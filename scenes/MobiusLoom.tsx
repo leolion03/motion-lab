@@ -22,7 +22,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 type Props = { count?: number; size?: number; speed?: number; flutter?: number;
-  interaction?: number; mobile?: boolean; reducedMotion?: boolean };
+  interaction?: number; mobile?: boolean; reducedMotion?: boolean; embedded?: boolean };
 const clamp = THREE.MathUtils.clamp;
 function Ribbon({ count, size, speed, flutter, interaction, reduced, target }: {
   count: number; size: number; speed: number; flutter: number; interaction: number;
@@ -69,7 +69,7 @@ function Ribbon({ count, size, speed, flutter, interaction, reduced, target }: {
   </points>;
 }
 export default function MobiusLoom({ count=2600, size=0.012, speed=0.35,
-  flutter=0.045, interaction=0.55, mobile=false, reducedMotion }: Props) {
+  flutter=0.045, interaction=0.55, mobile=false, reducedMotion, embedded=false }: Props) {
   const [systemReduced, setSystemReduced] = useState(true);
   const target = useRef(0);
   useEffect(() => {
@@ -79,14 +79,15 @@ export default function MobiusLoom({ count=2600, size=0.012, speed=0.35,
     return () => query.removeEventListener('change', update);
   }, []);
   const reduced = reducedMotion ?? systemReduced;
-  return <div role="img" aria-label="Mobius Loom: a twisted cyan and lilac particle ribbon. Drag horizontally to tilt."
-    style={{ width:'100%', height:'min(70vh, 560px)', minHeight:280, touchAction:'pan-y' }}
+  return <div role="img" aria-label="Mobius Loom: a twisted cyan and lilac particle ribbon."
+    style={{ width:'100%', height:embedded ? '100%' : 'min(70vh, 560px)', minHeight:embedded ? 0 : 280, touchAction:'pan-y' }}
     onPointerMove={e => {
+      if (!interaction) return;
       if (e.pointerType !== 'mouse' && e.buttons === 0) return;
       const box = e.currentTarget.getBoundingClientRect();
       target.current = clamp((e.clientX-box.left)/box.width*2-1,-1,1);
     }}
-    onPointerDown={e => e.currentTarget.setPointerCapture(e.pointerId)}
+    onPointerDown={e => { if (interaction) e.currentTarget.setPointerCapture(e.pointerId); }}
     onPointerUp={() => { target.current=0; }}
     onPointerCancel={() => { target.current=0; }}
     onLostPointerCapture={() => { target.current=0; }}

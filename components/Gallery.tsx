@@ -26,7 +26,7 @@ export default function Gallery() {
           <h1>Art, written<br />in <em>motion.</em></h1>
           <p>A little corner of the internet where code becomes light, particles become feelings, and every frame tells a story.</p>
           <a href="#gallery" className="primary-link">Explore the collection <ArrowUpRight size={18} /></a>
-          <div className="hero-meta"><span>12 ORIGINAL EXPERIMENTS</span><span>LIVE IN YOUR BROWSER</span></div>
+          <div className="hero-meta"><span>{works.length} ORIGINAL EXPERIMENTS</span><span>LIVE IN YOUR BROWSER</span></div>
         </div>
         <div className="hero-art" aria-hidden="true"><div className="hero-art-ring ring-a" /><div className="hero-art-ring ring-b" /><div className="hero-art-center" /><div className="hero-art-dot dot-a" /><div className="hero-art-dot dot-b" /><div className="hero-art-dot dot-c" /></div>
         <a href="#gallery" className="scroll-cue">SCROLL TO EXPLORE <ArrowDown size={14}/></a>

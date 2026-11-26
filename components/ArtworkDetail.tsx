@@ -21,6 +21,7 @@ const files: Record<string, string> = {
   "birthday-cake": "BirthdayCake.tsx",
   "saturn": "Saturn.tsx",
   "four-leaf-clover": "FourLeafClover.tsx",
+  "mobius-loom": "MobiusLoom.tsx",
 };
 
 export default function ArtworkDetail({ slug }: { slug: string }) {
@@ -71,6 +72,7 @@ export default function ArtworkDetail({ slug }: { slug: string }) {
   }
 
   if (!work) return <div className="not-found"><h1>Artwork not found</h1><Link href="/">← Back to gallery</Link></div>;
+  const isMobiusLoom = work.slug === "mobius-loom";
   const next = works[(works.indexOf(work) + 1) % works.length];
 
   return <main className="detail container">
@@ -90,10 +92,10 @@ export default function ArtworkDetail({ slug }: { slug: string }) {
     <div ref={stageRef} className={full ? "detail-canvas fullscreen" : "detail-canvas"}>
       <SceneCanvas key={work.slug} slug={work.slug} large interactive paused={paused} speed={speed} brightness={brightness} glowEnabled={glowEnabled} glow={glow} resetSignal={resetSignal} />
       <span className="live-indicator"><span className={`dot ${paused ? "dot-paused" : ""}`} /> {paused ? "PAUSED" : "LIVE RENDER"}</span>
-      <div className="canvas-hint">DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</div>
+      <div className="canvas-hint">{isMobiusLoom ? "DRAG HORIZONTALLY TO TILT" : <>DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</>}</div>
       <div className="canvas-tools">
         <button title={paused ? "Play" : "Pause"} aria-label={paused ? "Play animation" : "Pause animation"} onClick={() => setPaused(p => !p)}>{paused ? <Play size={17} /> : <Pause size={17} />}</button>
-        <button title="Reset camera" aria-label="Reset camera" onClick={() => setResetSignal(n => n + 1)}><RotateCcw size={17} /></button>
+        {!isMobiusLoom && <button title="Reset camera" aria-label="Reset camera" onClick={() => setResetSignal(n => n + 1)}><RotateCcw size={17} /></button>}
         <button title={full ? "Exit fullscreen" : "Fullscreen"} aria-label={full ? "Exit fullscreen" : "Fullscreen"} onClick={() => setFull(v => !v)}>{full ? <Minimize2 size={17} /> : <Maximize2 size={17} />}</button>
       </div>
     </div>
@@ -105,23 +107,25 @@ export default function ArtworkDetail({ slug }: { slug: string }) {
         <input id="speed" type="range" min="0.25" max="2.5" step="0.25" value={speed} onChange={e => setSpeed(Number(e.target.value))} />
         <output htmlFor="speed">{speed.toFixed(2)}×</output>
       </div>
-      <div className="speed-control appearance-control">
-        <label htmlFor="brightness">Brightness</label>
-        <input id="brightness" type="range" min="0.5" max="2" step="0.1" value={brightness} onChange={e => setBrightness(Number(e.target.value))} />
-        <output htmlFor="brightness">{brightness.toFixed(1)}×</output>
-      </div>
-      <label className="glow-switch" htmlFor="glowEnabled">
-        <input id="glowEnabled" type="checkbox" role="switch" checked={glowEnabled} onChange={e => setGlowEnabled(e.target.checked)} />
-        <span className="switch-track" aria-hidden="true"><span /></span>
-        <span>Glow effect <small>{glowEnabled ? "On" : "Off (default)"}</small></span>
-      </label>
-      {glowEnabled && <div className="speed-control appearance-control">
-        <label htmlFor="glow">Glow intensity</label>
-        <input id="glow" type="range" min="0.3" max="2" step="0.1" value={glow} onChange={e => setGlow(Number(e.target.value))} />
-        <output htmlFor="glow">{glow.toFixed(1)}×</output>
-      </div>}
+      {!isMobiusLoom && <>
+        <div className="speed-control appearance-control">
+          <label htmlFor="brightness">Brightness</label>
+          <input id="brightness" type="range" min="0.5" max="2" step="0.1" value={brightness} onChange={e => setBrightness(Number(e.target.value))} />
+          <output htmlFor="brightness">{brightness.toFixed(1)}×</output>
+        </div>
+        <label className="glow-switch" htmlFor="glowEnabled">
+          <input id="glowEnabled" type="checkbox" role="switch" checked={glowEnabled} onChange={e => setGlowEnabled(e.target.checked)} />
+          <span className="switch-track" aria-hidden="true"><span /></span>
+          <span>Glow effect <small>{glowEnabled ? "On" : "Off (default)"}</small></span>
+        </label>
+        {glowEnabled && <div className="speed-control appearance-control">
+          <label htmlFor="glow">Glow intensity</label>
+          <input id="glow" type="range" min="0.3" max="2" step="0.1" value={glow} onChange={e => setGlow(Number(e.target.value))} />
+          <output htmlFor="glow">{glow.toFixed(1)}×</output>
+        </div>}
+      </>}
       <button className="reset-speed" onClick={() => { setSpeed(1); setBrightness(0.8); setGlowEnabled(false); setGlow(1); setPaused(false); setResetSignal(n => n + 1); }}><RotateCcw size={14} /> Reset all</button>
-      <p className="appearance-note">Glow is off by default. Turn it on whenever you want softer, brighter particles. Gallery previews always use the glow-off default.</p>
+      {!isMobiusLoom && <p className="appearance-note">Glow is off by default. Turn it on whenever you want softer, brighter particles. Gallery previews always use the glow-off default.</p>}
     </section>
 
     <div className="detail-actions">
@@ -134,7 +138,7 @@ export default function ArtworkDetail({ slug }: { slug: string }) {
     {showCode && <section className="source-panel">
       <div className="source-head"><div><Code2 size={17} /> {files[work.slug]}</div><button disabled={!source} onClick={copySource}>{copied ? <Check size={16} /> : <Copy size={16} />} {copied ? "Copied!" : "Copy code"}</button></div>
       <pre><code>{sourceError ? "Unable to load source file." : source || "Loading source..."}</code></pre>
-      <p className="source-note">Scene component only. Each artwork also imports ParticleCloud.tsx; open /source/ParticleCloud.tsx or see README for the shared particle shader.</p>
+      {!isMobiusLoom && <p className="source-note">Scene component only. Each artwork also imports ParticleCloud.tsx; open /source/ParticleCloud.tsx or see README for the shared particle shader.</p>}
     </section>}
     <div className="detail-next"><Link href="/">← All artworks</Link><Link href={`/animation/${next.slug}`}>Next: {next.name} <ArrowUpRight size={16} /></Link></div>
     <footer className="footer"><span>© 2026 Motion Lab · v0.5.1</span><a href="https://github.com" target="_blank" rel="noreferrer">GitHub <ExternalLink size={13} /></a></footer>
